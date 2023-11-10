@@ -2,15 +2,15 @@
 
 ## 수정사항
 ### exem/tmp_ACC_RMSE_T2M.py or exem/tmp_ACC_RMSE_T2M.ipynb
-1. xy Plot 수정
+1. (hynoh) xy Plot 수정 
 	* grid 패턴
 	* grid 굵기
 	* fontsize 
-2. contour map text 수정
+2. (hjlee) contour map text 수정
 	* Left /  Right String 
-3. contour map labelbar 수정
+3. (jhkim) contour map labelbar 수정 
 	* labelbar의 size 
-4. 3번째 줄의 contour(빨간색) 수정
+4. (jechoi) 3번째 줄의 contour(빨간색) 수정 
 	* 검은색 pattern 간격 (좀 더 ACC의 수준이 잘 보이도록)
 
 ## 작업 진행 방법
