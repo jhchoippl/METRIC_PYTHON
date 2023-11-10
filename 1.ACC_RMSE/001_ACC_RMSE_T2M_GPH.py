@@ -1,16 +1,24 @@
+import sys
 import numpy as np
 import xarray as xr
-from sklearn.metrics import mean_squared_error
-import sys, os
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from cartopy.mpl.gridliner import LongitudeFormatter, LatitudeFormatter
+
 sys.path.append("../src")
 import READ_FILE
 import NCL_FUNC
 
 import cmaps
-import matplotlib.pyplot as plt
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
+import geocat.datafiles as gdf
 import geocat.viz as gv
+
+
+def add_cyclic(data):
+    import geocat.viz as gv
+    return gv.xr_add_cyclic_longitudes(data,'longitude')
 
 season = "ON"
 
@@ -218,64 +226,200 @@ z1000_rmse_gc32 = z10003_rmse_gc32[z10003_rmse_gc32['latitude']>=20,:].weighted(
 z500_rmse_gc2   = z5003_rmse_gc2[z5003_rmse_gc2['latitude']>=20,:].weighted(wgt).mean(dim=["longitude","latitude"])
 z500_rmse_gc32  = z5003_rmse_gc32[z5003_rmse_gc32['latitude']>=20,:].weighted(wgt).mean(dim=["longitude","latitude"])
 
+
+#-------------------------------------------------------------------------------------------------------------------------
+
 min_lon=0
 max_lon=360
 min_lat=-90
 max_lat=90
 
-datalist=[mt2m3_gc2_cdiff, mt2m3_gc32_cdiff]
-
-t2m=xr.concat(datalist,dim='model')
-
-fig, axs = plt.subplots(1,
-                        2,
-                        subplot_kw={"projection": ccrs.PlateCarree(central_longitude=180)},
-                        figsize=(12, 6),
-                        dpi=300)
-
-cmap=cmaps.BlueWhiteOrangeRed
 min_lat=20
 max_lat=90
 
-v=v = np.linspace(-6, 6, 13)
+syr, eyr = [reg_ot2m.year.data[i] for i in [0, -1]]
+
+fig = plt.figure(figsize=(8, 12),dpi=300)
+
+grid = gridspec.GridSpec(nrows=4, ncols=2, figure=fig)
+
+# Choose the map projection
+proj = ccrs.PlateCarree(central_longitude=180)
+
+ax1 = fig.add_subplot(grid[0:1,0:2])  # upper cell of grid
+ax2 = fig.add_subplot(grid[1,0], projection=proj)  # middle cell of grid
+ax3 = fig.add_subplot(grid[1,1], projection=proj)  # lower cell of grid
+ax4 = fig.add_subplot(grid[2,0], projection=proj)  # middle cell of grid
+ax5 = fig.add_subplot(grid[2,1], projection=proj)  # lower cell of grid
+ax6 = fig.add_subplot(grid[3,0], projection=proj)  # middle cell of grid
+ax7 = fig.add_subplot(grid[3,1], projection=proj)  # lower cell of grid
+
+
+axs=[ax2, ax3, ax4, ax5, ax6, ax7]
+right_title=list(range(7))
+
+
+time = np.arange(syr, eyr + 1)
+
+ax1.plot(time, reg_ot2m, label='JRA55', color='black', marker='o')
+ax1.plot(time, reg_mt2m_gc2, color='red', marker='o')
+ax1.plot(time, reg_mt2m_gc32, color='blue', marker='o')
+
+ax1.grid(True, which='both', linestyle='--', linewidth=0.5)
+ax1.set_xlabel('Year')  # Corrected method
+ax1.set_ylabel('[°C]')  # Corrected method
+gv.set_titles_and_labels(ax1,
+                        lefttitle=f'T2M Anomaly',
+                        righttitle=f'[ON, 1993/1994-2015/2016]',
+                        lefttitlefontsize=10,
+                        righttitlefontsize=10)
+
+ax1.legend(labels=[
+    'JRA55',
+    # f'GloSea5 (R={cor_t2m_gc2:.2f}({dcor_t2m_gc2:.2f})/NRMSE={nrmse_t2m_gc2:.2f}({dnrmse_t2m_gc2:.2f}))',
+    # f'GloSea6 (R={cor_t2m_gc32:.2f}({dcor_t2m_gc32:.2f})/NRMSE={nrmse_t2m_gc32:.2f}({dnrmse_t2m_gc32:.2f}))'
+], loc='upper left')
+
+# Adjusting the tick parameters
+ax1.tick_params(axis='x', which='major')
+ax1.tick_params(axis='y', which='major')
+
+
+
+for i in range(len(axs)):
+    ax=axs[i]
+    # Use geocat.viz.util convenience function to set axes tick values
+    ax.coastlines(resolution='10m', color='black', linewidth=0.5)
+    ax.add_feature(cfeature.LAKES, edgecolor='black')
+    gv.set_axes_limits_and_ticks(ax=ax,
+                                 xlim=(-180, 180),
+                                 ylim=(min_lat, max_lat),
+                                 yticks=np.arange(min_lat, max_lat, 30),
+                                 xticks=np.arange(-180, 181, 60))
+
+    # Use geocat.viz.util convenience function to make plots look like NCL
+    # plots by using latitude, longitude tick labels
+    gv.add_lat_lon_ticklabels(ax)
+
+    # Remove the degree symbol from tick labels
+    ax.yaxis.set_major_formatter(LatitudeFormatter(degree_symbol=''))
+    ax.xaxis.set_major_formatter(LongitudeFormatter(degree_symbol=''))
+
+    # Use geocat.viz.util convenience function to set titles
+    gv.set_titles_and_labels(ax,
+                             lefttitle=f'T2M Mean Bias',
+                             righttitle=f'metric {right_title[i]}',
+                             lefttitlefontsize=10,
+                             righttitlefontsize=10)
+
+cmap=cmaps.BlueWhiteOrangeRed
+v= np.linspace(-6, 6, 13)
 v=v[v!=0]
 
-data=t2m
-for i in range(data.model.size):
-    t2m=data[i]
-    axs[i].coastlines(resolution='10m', color='black', linewidth=0.5)
-    axs[i].add_feature(cfeature.LAKES, edgecolor='black')
-    c = axs[i].contourf(
-        t2m['longitude'].data,
-        t2m['latitude'].data,
-        t2m.data,
-        levels=v,
-        cmap=cmap,
-        extend='both',
-        transform=ccrs.PlateCarree()
-        )
-    title = f'T2M Mean Bias ({model[i]} minus JRA-55)'
-    axs[i].set_title(title,loc='left',fontsize=12)
+C = ax2.contourf(mt2m3_cdiff_gc2['longitude'].data,
+    mt2m3_cdiff_gc2['latitude'].data,
+    mt2m3_cdiff_gc2.data,
+    transform=ccrs.PlateCarree(),
+    levels=v,
+    cmap=cmap,
+    extend='both')
 
-    gv.add_lat_lon_ticklabels(axs[i])
+ax3.contourf(mt2m3_cdiff_gc32['longitude'].data,
+    mt2m3_cdiff_gc32['latitude'].data,
+    mt2m3_cdiff_gc32.data,
+    transform=ccrs.PlateCarree(),
+    levels=v,
+    cmap=cmap,
+    extend='both')
+plt.colorbar(C,
+             ax=[ax2, ax3],
+             ticks=v,
+             extendfrac='auto',
+             aspect=9,
+             drawedges=True,
+             orientation='horizontal',
+             pad=0.2
+             )
 
-    gv.set_axes_limits_and_ticks(axs[i],
-                                ylim=(min_lat, max_lat),
-                                yticks=np.arange(min_lat, max_lat, 30),
-                                xticks=np.arange(-180, 181, 60))
-cbar = plt.colorbar(c,
-                    ax=axs,
-                    orientation='horizontal',
-                    shrink=0.9,
-                    pad=0.1,
-                    fraction=.04,
-                    location='bottom',
-                    extendfrac='auto',
-                    ticks=v)
+cmap=cmaps.temp_diff_18lev
+v=v = np.linspace(-1, 1, 21)
+v=v[v!=0]
 
-cbar.ax.tick_params(labelsize=11)
+C2 = ax4.contourf(t2m3_acc_gc2['longitude'].data,
+    t2m3_acc_gc2['latitude'].data,
+    t2m3_acc_gc2.data,
+    transform=ccrs.PlateCarree(),
+    levels=v,
+    cmap=cmap,
+    extend='neither')
 
-plt.subplots_adjust(bottom=0.2, top=0.4, hspace=0, wspace=0.13)
+lon=tkc3_smap_gc2['longitude']
+lat=tkc3_smap_gc2['latitude']
+
+lon2d, lat2d = np.meshgrid(lon, lat)
+thinning_factor=5
+
+significance_threshold = 0.05
+significant_points = tkc3_smap_gc2 <= significance_threshold
+
+ax4.scatter(lon2d[significant_points][::thinning_factor], lat2d[significant_points][::thinning_factor], color='black', marker='.', s=1, transform=ccrs.PlateCarree())
+
+ax5.contourf(t2m3_acc_gc32['longitude'].data,
+    t2m3_acc_gc32['latitude'].data,
+    t2m3_acc_gc32.data,
+    transform=ccrs.PlateCarree(),
+    levels=v,
+    cmap=cmap,
+    extend='neither')
+
+significant_points = tkc3_smap_gc32 <= significance_threshold
+
+ax5.scatter(lon2d[significant_points][::thinning_factor], lat2d[significant_points][::thinning_factor], color='black', marker='.', s=1, transform=ccrs.PlateCarree())
+
+
+v=np.linspace(-1, 1, 11)
+
+plt.colorbar(C2,
+             ax=[ax4, ax5],
+             ticks=v,
+             extendfrac='auto',
+             aspect=11,
+             drawedges=True,
+             orientation='horizontal',
+             pad=0.2
+             )
+
+
+
+cmap=cmaps.WhiteBlueGreenYellowRed
+v=v = np.linspace(0, 10, 11)
+
+C3 = ax6.contourf(t2m3_rmse_gc2['longitude'].data,
+    t2m3_rmse_gc2['latitude'].data,
+    t2m3_rmse_gc2.data,
+    transform=ccrs.PlateCarree(),
+    levels=v,
+    cmap=cmap,
+    extend='max')
+
+ax7.contourf(t2m3_rmse_gc32['longitude'].data,
+    t2m3_rmse_gc32['latitude'].data,
+    t2m3_rmse_gc32.data,
+    transform=ccrs.PlateCarree(),
+    levels=v,
+    cmap=cmap,
+    extend='max')
+
+plt.colorbar(C3,
+             ax=[ax6, ax7],
+             ticks=v,
+             extendfrac='auto',
+             aspect=10,
+             drawedges=True,
+             orientation='horizontal',
+             pad=0.2
+             )
+
 ofile="./Figure/1-1_ACC_RMSE_T2M_GPH_"+season+""
 plt.savefig(ofile, bbox_inches='tight')
 plt.close()
