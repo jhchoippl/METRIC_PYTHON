@@ -1,4 +1,3 @@
-import geocat.datafiles as gdf
 import geocat.viz as gv
 import numpy as np
 import xarray as xr
