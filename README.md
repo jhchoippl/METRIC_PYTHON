@@ -1,6 +1,7 @@
 # METRIC_PYTHON
 
 ## 수정사항
+### exem/tmp_ACC_RMSE_T2M.py or exem/tmp_ACC_RMSE_T2M.ipynb
 1. xy Plot 수정
 	* grid 패턴
 	* grid 굵기
