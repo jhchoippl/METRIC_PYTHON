@@ -19,7 +19,7 @@ conda create -n <envname> --channel=conda-forge xarray cartopy pandas matplotlib
 
 conda activate <envname>
 ```
- * exem(exemple) 코드에 ipynb와 py 형식의 파일이 있음
+ * exem(exemple) 디렉토리에 ipynb와 py 형식의 파일이 있음
  * ipynb 파일
 	 * 1번째 cell : data 읽고 연평균 계산
 	 * 2번째 cell : 전처리
