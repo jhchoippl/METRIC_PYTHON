@@ -13,6 +13,12 @@
 	* 검은색 pattern 간격 (좀 더 ACC의 수준이 잘 보이도록)
 
 ## 작업 진행 방법
+### conda env 구성
+```
+conda create -n<envname> --channel=conda-forge xarray cartopy pandas matplotlib cmaps geocat-viz cftime
+
+conda activate <envname>
+```
  * exem(exemple) 코드에 ipynb와 py 형식의 파일이 있음
  * ipynb 파일
 	 * 1번째 cell : data 읽고 연평균 계산
