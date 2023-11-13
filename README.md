@@ -15,7 +15,7 @@
 ## 작업 진행 방법
 ### conda env 구성
 ```
-conda create -n <envname> -c=conda-forge xarray cartopy pandas matplotlib cmaps geocat-viz cftime ipython ipykernel
+conda create -n <envname> -c=conda-forge xarray cartopy pandas matplotlib cmaps geocat-viz cftime h5netcdf ipython ipykernel
 
 conda activate <envname>
 ```
