@@ -240,6 +240,17 @@ for row in range(0, 3):
                                 fraction=0.07
                                 )
             cbar.ax.tick_params(labelsize=4)
+significance_threshold = 0.49
+density=5
+for i in [0,1]:
+    axs[1][i].contourf(tkc3_smap[i]['longitude'].data,
+        tkc3_smap[i]['latitude'].data,
+        tkc3_smap[i].data,
+        transform=ccrs.PlateCarree(),
+        colors='none',
+        levels=[0,significance_threshold],
+        hatches=[density*'.'],)
+    
 ofile2=f"./Figure/1-1_ACC_RMSE_SIC_{season}_polar.png"
 plt.savefig(ofile2, bbox_inches='tight')
 plt.close()
@@ -253,7 +264,7 @@ data2 = np.array(image2)
 
 gs = gridspec.GridSpec(5, 2,hspace=0)
 
-fig = plt.figure(figsize=(10, 10))
+fig = plt.figure(figsize=(10, 10),dpi=300)
 ax1=fig.add_subplot(gs[0,:])
 ax1.imshow(data1)
 ax1.axis('off')
