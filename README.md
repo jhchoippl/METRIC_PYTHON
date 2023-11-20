@@ -1,7 +1,7 @@
 # METRIC_PYTHON
 
 ## 분업
-### 전처리 수정 및 코드 완성
+### 전처리 변환 및 코드 완성
 * 1./data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/1.ACC_RMSE/002_ACC_RMSE_SIC.ncl
 * 2./data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/2.AO/001_AO.ncl, Cal_AO_JRA55.ncl, Cal_AO_JRA55_PATTERN.ncl, Cal_AO_Model.ncl
 * 3./data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/3.ART/001_ART.ncl, Cal_ART.ncl
