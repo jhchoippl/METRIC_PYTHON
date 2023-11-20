@@ -16,7 +16,7 @@ def add_cyclic(data):
     import geocat.viz as gv
     return gv.xr_add_cyclic_longitudes(data,'longitude')
 
-season = "ON"
+season = "FM"
 syr, eyr=1993,2015
 
 indir            = "../data/"
