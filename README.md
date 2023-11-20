@@ -2,10 +2,11 @@
 
 ## 분업
 ### 전처리 변환 및 코드 완성
-* 1./data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/1.ACC_RMSE/002_ACC_RMSE_SIC.ncl
-* 2./data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/2.AO/001_AO.ncl, Cal_AO_JRA55.ncl, Cal_AO_JRA55_PATTERN.ncl, Cal_AO_Model.ncl
-* 3./data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/3.ART/001_ART.ncl, Cal_ART.ncl
-* 4./data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/4.Blocking/003_Blocking_yearly.ncl, Cal_Frequency_ENS.ncl, Cal_Frequency.ncl
+ORG DIR=/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL
+* 1.ORG DIR/1.ACC_RMSE/002_ACC_RMSE_SIC.ncl (HYLEE)
+* 2.ORG DIR/2.AO/001_AO.ncl, Cal_AO_JRA55.ncl, Cal_AO_JRA55_PATTERN.ncl, Cal_AO_Model.ncl
+* 3.ORG DIR/3.ART/001_ART.ncl, Cal_ART.ncl
+* 4.ORG DIR/4.Blocking/003_Blocking_yearly.ncl, Cal_Frequency_ENS.ncl, Cal_Frequency.ncl
 
 ## 작업 진행 방법
 ### conda env 구성
