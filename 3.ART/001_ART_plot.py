@@ -25,7 +25,7 @@ def polar_proj_polyline(lat_min, lat_max, lon_min, lon_max):
     corners=[lower_left, lower_right, upper_left, upper_right]
     return corners    
 
-season = "ON"
+season = "FM"
 
 indir   = "../data/"
 in_data = xr.open_dataset(f"{indir}DATA_ART_{season}.nc")
