@@ -28,8 +28,8 @@ def add_cyclic(data):
 
 season = "DJ"
 
-indir="/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/1.ACC_RMSE/data"
-data=xr.open_dataset(f"{indir}/DATA_001_{season}.nc")
+indir            = "../data/"
+data=xr.open_dataset(f"{indir}DATA_001_{season}.nc")
 
 data_vars=list(data.data_vars)
 
