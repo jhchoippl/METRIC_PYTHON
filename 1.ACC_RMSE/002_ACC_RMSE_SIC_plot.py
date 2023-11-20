@@ -16,7 +16,7 @@ def add_cyclic(data):
     import geocat.viz as gv
     return gv.xr_add_cyclic_longitudes(data,'longitude')
 
-season = "DJ"
+season = "ON"
 
 indir            = "../data/"
 in_data          = xr.open_dataset(f"{indir}DATA_002_{season}.nc")
@@ -57,7 +57,6 @@ reg_sic    = [reg_osic,reg_msic_gc2,reg_msic_gc32]
 syr, eyr=1993,2015
 
 time = np.arange(syr, eyr + 1)
-xy_plot_y_lim=[-5,5]
 
 fig = plt.figure(figsize=(10, 4),dpi=300)
 ax=plt.axes()
@@ -86,7 +85,10 @@ ax.legend(labels=[
 
 # Adjusting the tick parameters
 ax.set_xlim([min(time),max(time)])
-ax.set_ylim(xy_plot_y_lim)
+if season=="ON":
+    ax.set_ylim(-10,10)
+else:
+    ax.set_ylim(-5,5)
 
 # ax.set_yticks(np.arange(-4,5,2))
 ax.set_xticks(np.arange(syr, eyr,3))
