@@ -8,7 +8,7 @@ def READ_JRA55(season,tvar,tlev):
     # tlev="all"
     # tvar ="tmp2m" #hgt tmp2m, sic, tmp, ugrd, vgrd
     # season = "DJ"
-    wdir="/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/"
+    wdir="/data1/jhchoi/METRIC_NCL"
 
     if season == "DJ":
         syr, eyr = 1993, 2015
@@ -59,7 +59,8 @@ def READ_JRA55(season,tvar,tlev):
                 jvar = inf1[tvar][:, :, :]
             elif tvar == "sic":
                 jvar = inf1[tvar][0, :, :]
-
+            leap_day_mask = (jvar['time'].dt.month == 2) & (jvar['time'].dt.day == 29)
+            jvar = jvar.sel(time=~leap_day_mask)
             data_arrays.append(jvar)
     # xarray.concat으로 데이터 연결
     ovar_tmp = xr.concat(data_arrays, dim="time")
@@ -76,7 +77,7 @@ def READ_JRA55(season,tvar,tlev):
     return annual_means
 
 
-def READ_GloSea5(season,tvar,tlev,imodel):
+def READ_GloSea(season,tvar,tlev,imodel):
     import numpy as np
     import xarray as xr
     import warnings
@@ -86,7 +87,7 @@ def READ_GloSea5(season,tvar,tlev,imodel):
     # tvar = "temp"
     # tlev = 500
     # imodel="GloSea5"
-    wdir="/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/"
+    wdir="/data1/jhchoi/METRIC_NCL"
     
     if season == "DJ":
         syr, eyr = 1993, 2015
@@ -110,6 +111,8 @@ def READ_GloSea5(season,tvar,tlev,imodel):
         except:
             pass
         f=f.sel(time=f['time'].dt.month.isin(tmon))
+        leap_day_mask = (f['time'].dt.month == 2) & (f['time'].dt.day == 29)
+        f = f.sel(time=~leap_day_mask)
         f_combined.append(f)
         
     f_combined = xr.concat(f_combined, dim='time')
@@ -136,11 +139,9 @@ def READ_GloSea5(season,tvar,tlev,imodel):
         if tlev is not "all":
             data = data[:, data['lev']==tlev, :, :]
 
-    dec_jan_mask = data['time.month'].isin(tmon)
-    dec_jan_ds = data.where(dec_jan_mask, drop=True)
-    dec_jan_ds['year'] = dec_jan_ds['time.year']
-    dec_jan_ds['year'] = xr.where(dec_jan_ds['time.month'] == 12, dec_jan_ds['year'] + 1, dec_jan_ds['year'])
-    annual_means = dec_jan_ds.groupby('year').mean('time')
+    data['year'] = data['time.year']
+    data['year'] = xr.where(data['time.month'] == 12, data['year'] + 1, data['year'])
+    annual_means = data.groupby('year').mean('time')
     if 'lev' in annual_means.dims:
         if annual_means.sizes['lev'] == 1:
             annual_means=annual_means.squeeze('lev')
