@@ -8,7 +8,7 @@ def READ_JRA55(season,tvar,tlev):
     # tlev="all"
     # tvar ="tmp2m" #hgt tmp2m, sic, tmp, ugrd, vgrd
     # season = "DJ"
-    wdir="/data1/jhchoi/METRIC_NCL"
+    wdir="/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/"
 
     if season == "DJ":
         syr, eyr = 1993, 2015
@@ -87,7 +87,7 @@ def READ_GloSea(season,tvar,tlev,imodel):
     # tvar = "temp"
     # tlev = 500
     # imodel="GloSea5"
-    wdir="/data1/jhchoi/METRIC_NCL"
+    wdir="/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/"
     
     if season == "DJ":
         syr, eyr = 1993, 2015
