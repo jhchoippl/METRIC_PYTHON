@@ -1,14 +1,15 @@
+#!/home/jhchoi/anaconda3/envs/py311/bin/python
+
 import sys, os
 import xarray as xr
 import numpy as np
 from eofs.xarray import Eof
 import statsmodels.api as sm
 
+import Cal_AO
 sys.path.append("../src")
 import READ_FILE 
 import NCL_FUNC 
-import Cal_AO
-
 
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
@@ -26,8 +27,13 @@ def add_cyclic(data):
     import geocat.viz as gv
     return gv.xr_add_cyclic_longitudes(data,'longitude')
 
-season = "DJ"
+season="FM"
 
+try:
+    season=sys.argv[1]
+except IndexError:
+    pass
+print(season)
 
 wdir  = "/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/"
 inDir = f'{wdir}/DATA/JRA55/hgt_mon/'
@@ -72,9 +78,9 @@ xw = hgt_ano * clat_weights
 xw = xw.drop('month')
 
 #======= EOF ============================ 
-solver       = Eof(xw)
-eof          = -1*solver.eofs(neofs=1, eofscaling=0) # EOFs are multiplied by the square-root of their eigenvalues
-eof_ts       = -1*solver.pcs(npcs=1, pcscaling=1) # PCs are scaled to unit variance
+solver = Eof(xw)
+eof    = -1*solver.eofs(neofs=1, eofscaling=0) # EOFs are multiplied by the square-root of their eigenvalues
+eof_ts = -1*solver.pcs(npcs=1, pcscaling=1) # PCs are scaled to unit variance
 
 varfrac = solver.varianceFraction()*100
 
@@ -120,19 +126,20 @@ elif season == "ON":
 eof_ts_jra = Cal_AO.calculate_eof_ts_jra(season, eof_regres_jra, lat_jra, lon_jra)
 
 model0 = "GloSea5"
-imodel=model0
-tlev = 1000
-tvar = "hgt"
+imodel = model0
+tlev   = 1000
+tvar   = "hgt"
 mvar = READ_FILE.READ_GloSea(season,tvar,tlev,imodel)
 
 hgt_tmp=mvar[:,20<=mvar['latitude'],:]
 eof_ts_gc2,eof_regres_gc2 = Cal_AO.regres(hgt_tmp, eof_regres_jra, season, lat_jra, lon_jra)
 
-model1  = "GloSea6"
-imodel  = model1
-tlev    = 1000
-tvar    = "hgt"
-mvar    = READ_FILE.READ_GloSea(season,tvar,tlev,imodel)
+model1 = "GloSea6"
+imodel = model1
+tlev   = 1000
+tvar   = "hgt"
+mvar = READ_FILE.READ_GloSea(season,tvar,tlev,imodel)
+
 hgt_tmp = mvar[:,20<=mvar['latitude'],:]
 eof_ts_gc32,eof_regres_gc32 = Cal_AO.regres(hgt_tmp, eof_regres_jra, season, lat_jra, lon_jra)
 
@@ -291,7 +298,7 @@ ax2.set_ylabel('Standardized', fontsize=13)  # Corrected metho
 
 gv.set_titles_and_labels(ax2,
                         lefttitle=f'AO Index (variance:{eof_regres_jra.pcvar:.1f}%)',
-                        righttitle=f'[{season}, {syr}/{syr+1}-{eyr}/{eyr+1}]',
+                        righttitle=f'[{season}, 1993/1994-2015/2016]',
                         lefttitlefontsize=12,
                         righttitlefontsize=12)
 
