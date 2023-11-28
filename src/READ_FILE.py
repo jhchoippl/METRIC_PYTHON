@@ -58,21 +58,21 @@ def READ_JRA55(season,tvar,tlev):
             elif tvar == "tmp2m":
                 jvar = inf1[tvar][:, :, :]
             elif tvar == "sic":
-                jvar = inf1[tvar][0, :, :]
+                jvar = inf1[tvar]
             leap_day_mask = (jvar['time'].dt.month == 2) & (jvar['time'].dt.day == 29)
             jvar = jvar.sel(time=~leap_day_mask)
             data_arrays.append(jvar)
     # xarray.concat으로 데이터 연결
     ovar_tmp = xr.concat(data_arrays, dim="time")
-    ovar_tmp=ovar_tmp.rename({'lat':'latitude','lon':'longitude'})    
+    if 'lat' and 'lon' in ovar_tmp.dims:
+        ovar_tmp=ovar_tmp.rename({'lat':'latitude','lon':'longitude'})    
     dec_jan_mask = ovar_tmp['time.month'].isin(tmon)
     dec_jan_ds = ovar_tmp.where(dec_jan_mask, drop=True)
     dec_jan_ds['year'] = dec_jan_ds['time.year']
     dec_jan_ds['year'] = xr.where(dec_jan_ds['time.month'] == 12, dec_jan_ds['year'] + 1, dec_jan_ds['year'])
     annual_means = dec_jan_ds.groupby('year').mean('time')
-    if 'lev' in annual_means.dims:
-        if annual_means.sizes['lev'] ==1:
-            annual_means=annual_means.squeeze('lev')
+
+    annual_means=annual_means.squeeze()
     print(annual_means)
     return annual_means
 
@@ -123,27 +123,18 @@ def READ_GloSea(season,tvar,tlev,imodel):
         var=list(f_combined.data_vars)[0]
         data=f_combined[var]
 
-    try:
-        data=data.rename({'lat':'latitude','lon':'longitude'})
-    except:
-        pass
+    if 'lat' and 'lon' in data.dims:
+        data=data.rename({'lat':'latitude','lon':'longitude'})    
 
-    if tvar == 't15m':
-        if imodel == 'GloSea5':
-            data=data.squeeze('height')
-    elif tvar == 'sic':
-        if imodel == 'GloSea5':
-            data=data.squeeze('surface')
-    else:
+    if 'level' in data.dims:
         data=data.rename({'level':'lev'})
+    if 'lev' in data.dims:
         if tlev is not "all":
             data = data[:, data['lev']==tlev, :, :]
 
     data['year'] = data['time.year']
     data['year'] = xr.where(data['time.month'] == 12, data['year'] + 1, data['year'])
     annual_means = data.groupby('year').mean('time')
-    if 'lev' in annual_means.dims:
-        if annual_means.sizes['lev'] == 1:
-            annual_means=annual_means.squeeze('lev')
+    annual_means=annual_means.squeeze()
     print(annual_means)
     return annual_means
