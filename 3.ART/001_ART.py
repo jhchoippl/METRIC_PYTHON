@@ -57,14 +57,13 @@ tvar = "t15m"
 mt2m3_gc32 = READ_FILE.READ_GloSea(season,tvar,tlev,model0)
 
 # JRA55 
-t2m= ot2m3
 owgt=NCL_FUNC.latRegWgt(ot2m3['latitude'])
 wgt  = owgt
 clat = owgt
 wgt.name='weights'
 
 
-ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT, smap_art1, smap_art2= Cal_ART.Cal_ART_func(t2m, wgt)
+ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT, smap_art1, smap_art2= Cal_ART.Cal_ART_func(ot2m3, wgt)
        
 dcor_art_jra=NCL_FUNC.escorc(dt_art1,dt_art2)
 cor_art_jra=NCL_FUNC.escorc(ART1,ART2)
@@ -90,9 +89,8 @@ del ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT,
 gc.collect()
 
 # Glosea5
-t2m= mt2m3_gc2
 
-ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT, smap_art1, smap_art2=Cal_ART.Cal_ART_func(t2m, wgt)
+ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT, smap_art1, smap_art2=Cal_ART.Cal_ART_func(mt2m3_gc2, wgt)
 dcor_art_gc2=NCL_FUNC.escorc(dt_art1,dt_art2)
 cor_art_gc2=NCL_FUNC.escorc(ART1,ART2)
 
@@ -116,9 +114,8 @@ del ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT,
 gc.collect()
 
 #Glosea6
-t2m = mt2m3_gc32
 
-ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT, smap_art1, smap_art2=Cal_ART.Cal_ART_func(t2m, wgt)
+ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT, smap_art1, smap_art2=Cal_ART.Cal_ART_func(mt2m3_gc32, wgt)
 dcor_art_gc32=NCL_FUNC.escorc(dt_art1,dt_art2)
 cor_art_gc32=NCL_FUNC.escorc(ART1,ART2)
 
