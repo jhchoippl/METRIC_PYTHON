@@ -1,25 +1,27 @@
 # METRIC_PYTHON
 
-## 분업
-### 전처리 변환 및 코드 완성
-ORG DIR=/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL
-* 1.ORG DIR/1.ACC_RMSE/002_ACC_RMSE_SIC.ncl (HYLEE)
-* 2.ORG DIR/2.AO/001_AO.ncl, Cal_AO_JRA55.ncl, Cal_AO_JRA55_PATTERN.ncl, Cal_AO_Model.ncl
-* 3.ORG DIR/3.ART/001_ART.ncl, Cal_ART.ncl
-* 4.ORG DIR/4.Blocking/003_Blocking_yearly.ncl, Cal_Frequency_ENS.ncl, Cal_Frequency.ncl
-
-## 작업 진행 방법
-### conda env 구성
+## conda env 구성
 ```
-conda create -n <envname> -c=conda-forge xarray cartopy pandas matplotlib cmaps geocat-viz cftime h5netcdf ipython ipykernel
+conda create -n <envname> -c=conda-forge xarray cartopy pandas matplotlib cmaps geocat-viz cftime ipython ipykernel statsmodels eofs python-cdo
 
 conda activate <envname>
 ```
-* 1.ACC_RMSE 디렉토리에 전처리 코드가 완성된 001_ACC_RMSE_T2M_GPH_plot.py 파일을 참고
-* src 디렉토리의 파일을 참고
-* 각 디렉토리의 data 디렉토리에 전처리가 완료된 파일을 참고
+## 파일별 설명
+* 0\. POST
+    * 모델 데이터 후처리를 위한 파일
+* 2\. AO
+    * [001_AO.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/2.AO/001_AO.py)는 전처리 + plotting
+    * [001_AO_plot.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/2.AO/001_AO_plot.py)는 onpy plotting
+    * [Cal_AO.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/2.AO/Cal_AO.py)는 AO 전처리에 필요한 함수들
+* 3\. ART
+    * [001_ART.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/3.ART/001_ART.py)는 전처리 + plotting
+    * [001_ART_plot.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/3.ART/001_ART_plot.py)는 onpy plotting
+    * [Cal_ART.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/3.ART/Cal_ART.py)는 AO 전처리에 필요한 함수들
 
-## Tip
-* 전처리 부분은 수정을 할 필요가 없지만 시간이 오래걸리기 때문에 가급적 ipynb파일에서 2번 cell을 실행하고 3번 cell만 수정, 실행을 진행 권장
-* 잘 모르겠다 싶으면 물어보기
-* GPT 잘 활용하기
+* 4\. Blocking
+    * [003_Blocking_yearly.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/4.Blocking/003_Blocking_yearly.py)는 전처리 + plotting
+    * [003_Blocking_yearly_plot.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/4.Blocking/003_Blocking_yearly_plot.py)는 onpy plotting
+    * 모델명 디렉토리는 데이터 전처리를 위한 파일
+* src
+    * [READ_FILE.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/src/READ_FILE.py)은 후처리 된 데이터를 읽는 파일
+    * [NCL_FUNC.py](https://github.com/jhchoippl/METRIC_PYTHON/blob/main/src/NCL_FUNC.py)은 NCL의 함수를 python에서 구현하기 위한 함수들
