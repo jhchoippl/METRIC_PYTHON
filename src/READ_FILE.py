@@ -1,4 +1,5 @@
 def READ_JRA55(season,tvar,tlev):
+    import os
     import xarray as xr
     import warnings
     warnings.filterwarnings('ignore')
@@ -8,7 +9,8 @@ def READ_JRA55(season,tvar,tlev):
     # tlev="all"
     # tvar ="tmp2m" #hgt tmp2m, sic, tmp, ugrd, vgrd
     # season = "DJ"
-    wdir="/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/"
+    file_path=os.path.abspath(__file__)
+    wdir=f"{os.path.dirname(file_path)}/../"
 
     if season == "DJ":
         syr, eyr = 1993, 2015
@@ -78,6 +80,7 @@ def READ_JRA55(season,tvar,tlev):
 
 
 def READ_GloSea(season,tvar,tlev,imodel):
+    import os
     import numpy as np
     import xarray as xr
     import warnings
@@ -87,7 +90,9 @@ def READ_GloSea(season,tvar,tlev,imodel):
     # tvar = "temp"
     # tlev = 500
     # imodel="GloSea5"
-    wdir="/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/"
+    file_path=os.path.abspath(__file__)
+    wdir=f"{os.path.dirname(file_path)}/../"
+
     
     if season == "DJ":
         syr, eyr = 1993, 2015

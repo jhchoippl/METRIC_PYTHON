@@ -17,7 +17,7 @@ try:
 except IndexError:
     pass
 print(season)
-wdir='/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/4.Blocking'
+wdir='./'
 
 
 

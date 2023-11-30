@@ -45,5 +45,3 @@ def Cal_ART_func(t2m, wgt):
     smap_art2 = xr.where(ttest_art2 >= sig_lev, sig_val, sig_lev)
     
     return ART1, ART2, ano, dt_art1, dt_art2, dt_ea, dt_na, COR_ART1_SAT, COR_ART2_SAT, smap_art1, smap_art2
-
- 

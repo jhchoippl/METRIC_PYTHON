@@ -35,7 +35,7 @@ except IndexError:
     pass
 print(season)
 
-wdir  = "/data03/Glosea5/jhsim/NCL2PYTHON/METRIC_NCL/"
+wdir  = "../"
 inDir = f'{wdir}/DATA/JRA55/hgt_mon/'
 
 syr  = 1979
